@@ -22,7 +22,5 @@ class Dish extends Model
         'dish_ingredients',
         'dish_dir',
         'dish_time'
-
-
     ];
 }
