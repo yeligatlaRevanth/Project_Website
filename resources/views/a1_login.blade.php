@@ -5,51 +5,58 @@
 <html>
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
 
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Trirong">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Trirong">
+	<style type="text/css">
+    .container-bg {
+        border-radius: 20%;
+    }
+
+    * {
+        font-family: "Trirong", serif;
+    }
+
+    body {
+        background-color: white;
+    }
+</style>
 </head>
 
 <body>
-	<div class="mybg"></div>
-	<div class="content">
-		<div class="container-bg min-vh-100 d-flex justify-content-center align-items-center">
-
-			<form action="{{route('login.post')}}" method="POST" style="background-color: #abd6ff; border-radius: 10%; padding:40px; box-shadow:0 2px 4px 0 rgba(0,0,0,.2);">
-				@csrf
-				<p>Login</p>
-				<div class="mb-3">
-					<label class="form-label">Email address</label>
-					<input type="email" class="form-control" name="email">
-					<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-				</div>
-				<div class="mb-3">
-					<label class="form-label">Password</label>
-					<input type="password" class="form-control" name="password">
-				</div>
-				<button type="submit" class="btn btn-primary" style="margin-top: 12px;">Submit</button>
-			</form>
-		</div>
-	</div>
-
-
-
-
-
+    <div class="content">
+        <!-- Customize the size of the total container below -->
+        <div class="container-bg min-vh-100 d-flex justify-content-center align-items-center mt-4" style="height:75%;">
+            <form action="{{ route('login.post') }}" method="POST" style="border-radius: 20%; padding: 20px;">
+                @csrf
+                <div style="display: flex;">
+                    <div style="flex: 1; background-color: #fde5c2; padding: 20px; border-top-left-radius: 20px; border-bottom-left-radius: 0px; display: flex; flex-direction: column; justify-content: center;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <p style="font-size:2em;">Login</p>
+                        </div>
+                        <div class="mb-3" style="text-align: left; margin-left: 20px;">
+                            <label class="form-label" style="font-size:1em;">Email address</label>
+                            <input type="email" class="form-control" name="email">
+                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                        </div>
+                        <div class="mb-3" style="text-align: left; margin-left: 20px;">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" name="password">
+                        </div>
+                        <button type="submit" class="btn" style="margin-left: 250px; margin-top:40px; background-color:#f79402; color:white; width: 100px;">Submit</button> <!-- Adjust width as needed -->
+                    </div>
+                    <div style="flex: 1;">
+                        <img src="icon_login2.jpg" alt="Login Icon" style="width: 100%; height: auto; border-top-right-radius: 10px; border-bottom-right-radius: 10px;">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
-<style type="text/css">
-	* {
-		font-family: "Trirong", serif;
-	}
 
-	body {
-		background-image: url('/images/bg_signup.jpg');
-		background-repeat: no-repeat;
-		background-size: cover;
-	}
-</style>
+
 
 
 </html>

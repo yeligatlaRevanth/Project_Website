@@ -23,8 +23,7 @@
 		.segment-control {
 			display: flex;
 			justify-content: flex-start;
-			margin-bottom: 20px;
-			/* Adjusted margin */
+			margin-bottom: 10px; /* Adjusted margin */
 			margin-left: 20px;
 			/* Adjusted margin */
 		}
@@ -111,7 +110,7 @@
 		}
 
 		.container {
-			max-width: 90%;
+			max-width: 100%;
 		}
 
 		.col-lg-9 {
@@ -125,9 +124,13 @@
 			}
 
 			#home_t1 {
-				width: 80%;
+				width: 100%;
 				/* Adjusted width */
 			}
+		}
+
+		.container1{
+			margin-left: 4rem;
 		}
 
 		/* Hide scrollbar for Firefox */
@@ -155,7 +158,7 @@
 	</div>
 
 
-	<div class="container mt-5">
+	<div class="container1 mt-5">
 		<div class="row">
 			<div class="col-12">
 				<p class="text-lg-right text-center fs-2 mt-5" style="font-family:Trirong"><span style="color:#f79402;">Starving?</span> We got you covered</p>
@@ -172,7 +175,7 @@
 
 
 	<div>
-		<div class="container mt-5">
+		<div class="container">
 			<div class="row">
 				<div class="col-12">
 					<div class="d-flex align-items-center">

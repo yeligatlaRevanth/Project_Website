@@ -1,0 +1,292 @@
+@extends('layout')
+@section('content')
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Trirong">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/294239cf6e.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <!-- User Basic Container -->
+            <div class="col-3">
+                <div class="me-2 mt-5">
+                    <div id="user_basic_container" style="background-color: #f79402; height:auto;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; border-radius:20px; padding: 20px;">
+                        <div class=".img-fluid. max-width:500px;" id="user_basic">
+                            <img src="{{asset('icon_userprofile.png')}}" id="ub_img" style="width: 100px; height: 100px; border-radius: 50%;">
+                            <p class="h3" id="ub_name" style="margin-top: 20px;">{{Auth::user()->name}}</p>
+                            <p class="h6" id="ub_desc">Testing new user. Loves cooking in free time. LPU undergrad student.</p>
+                        </div>
+                        <div class="ubDetails" style="margin-top: 20px;">
+                            <p>Level</p>
+                            <h5><span class="badge bg-secondary">Novice</span></h5>
+                        </div>
+                        <div class="ubDetails">
+                            <p>Member Since</p>
+                            <h5><span class="badge bg-secondary">Nov 11, 2023</span></h5>
+                        </div>
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-6">
+                                <a type="button" href="/logout" class="btn btnStyle" style="display:flex; margin: auto;width:100%">Logout</a>
+                            </div>
+                            <div class="col-6">
+                                <a type="button" href="#" class="btn btnStyle" style="display:flex; width:100%">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Segment Control -->
+            <div class="col-9">
+                <div class="row mt-5 ms-6">
+                    <div class="col-12">
+                        <div class="row w-100">
+                            <div class="col-12 d-flex align-content-center justify-content-end">
+                                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="userPostsTab" data-bs-toggle="tab" data-bs-target="#userPosts" type="button" role="tab" aria-controls="userPosts" aria-selected="true">Your Posts</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="profileTab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Profile Content -->
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="userPosts" role="tabpanel" aria-labelledby="userPostsTab">
+                                <!-- Your Posts section content here -->
+                                <div class="row" id="user_posts" style="display: none;">
+                                    <div class="col-12" style="background-color: whitesmoke; padding: 20px;">
+                                        <div class="row mt-4">
+                                            <div class="col-3">
+                                                <p class="ms-4" style="font-size: 25px;font-weight:600; color: #f79402;" id="posts">Your Posts</p>
+                                            </div>
+                                            <div class="col-9 d-flex justify-content-end ">
+                                                <button type="button" class="btn btnStyle1" data-bs-toggle="modal" data-bs-target="#addDishModal">
+                                                    Create Post
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="overflow-y: auto; max-height: 300px;">
+                                            <div class="container_user_posts" style="margin-top: 20px;">
+                                                <div class="container d-flex justify-content-center  flex-wrap" style="padding-right: 120px;">
+                                                    @foreach ($dishes_all as $dishes)
+                                                    <div class="container_allDishes">
+                                                        <div class="card" style="width: 16rem;margin-bottom: 20px;margin-right:20px; box-shadow:20p 20px black">
+                                                            <img src="{{URL::asset('uploads/dishes/' . $dishes->dish_image)}}" class="card-img-top">
+                                                            <div class="card-body" style="box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
+                                                                <h5 class="card-title">{{$dishes->dish_name}}</h5>
+                                                                <h6 class="card-subtitle mb-2 text-muted">Cuisine: {{$dishes->dish_cuisine}} </h6>
+                                                                <p class="card-text">Ingredients: {{$dishes->dish_ingredients}}</p>
+                                                                <p class="card-text">Preparation Time: {{$dishes->dish_time}}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profileTab">
+                                <!-- Profile section content here -->
+                                <div class="row mt-5 ms-6">
+                                    <div class="col-12">
+                                        <div class="row w-100">
+                                            <div class="col-12 d-flex align-content-center">
+                                                <h1 style="font-size: 25px;font-weight:600; margin-top:20px; color: #f79402;" id="abt">Profile</h1>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-3" id="posMar">
+                                                <p style="font-weight: 600;">Full Name</p>
+                                            </div>
+                                            <div class="col-3" id="negMar">
+                                                <p>{{Auth::user()->name}}</p>
+                                            </div>
+                                            <div class="col-3" id="posMar">
+                                                <p style="font-weight: 600;">Gender</p>
+                                            </div>
+                                            <div class="col-3" id="negMar">
+                                                <p>Male</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <p style="font-weight: 600;" id="posMar">Email</p>
+                                            </div>
+                                            <div class="col-3" id="negMar">
+                                                <p>{{Auth::user()->email}}</p>
+                                            </div>
+                                            <div class="col-3">
+                                                <p style="font-weight: 600; margin-left: 20px;" id="posMar">Location</p>
+                                            </div>
+                                            <div class="col-3" id="negMar">
+                                                <p>Hyderabad</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addDishModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!-- Modal content -->
+    </div>
+</body>
+
+<script>
+    $(document).ready(function() {
+        $('#userPostsTab').click(function() {
+            $('#userPosts').show();
+            $('#profile').hide();
+        });
+        $('#profileTab').click(function() {
+            $('#userPosts').hide();
+            $('#profile').show();
+        });
+    });
+</script>
+<style type="text/css">
+	.ubDetails {
+		background-color: whitesmoke;
+		width: 90%;
+		height: auto;
+		margin: auto;
+		display: flex;
+		justify-content: space-between;
+		padding-top: 8px;
+		padding-left: 12px;
+		padding-right: 12px;
+		color: black;
+		border-radius: 4px;
+	}
+
+	.btnStyle {
+		background-color: white;
+		color: #f79402;
+	}
+
+	.btnStyle1 {
+		background-color: #f79402;
+		color: white;
+	}
+
+	.container_user_posts {
+		display: flex;
+		flex-wrap: wrap;
+		padding-top: 20px;
+		margin-top: 20px;
+	}
+
+	.card {
+		background-color: whitesmoke;
+	}
+
+	.selectpicker {
+		padding-right: 350px;
+	}
+
+	.dropdown-toggle::after {
+		margin-left: 340px;
+	}
+
+	.container_dish>.dish_desc {
+		display: flex;
+		justify-content: flex-start;
+		flex-wrap: wrap;
+		font-size: smaller;
+	}
+
+	.container_dish>.dish_title {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+
+	.container_dish {
+		background-color: whitesmoke;
+	}
+
+	.container_dish>img {
+		width: 200px;
+		height: 200px;
+	}
+
+	.container_allDishes {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+
+	#abt {
+		font-size: larger;
+	}
+
+	#user_posts {
+		box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+		background-color: whitesmoke;
+		margin-top: 30px;
+		padding: 20px;
+	}
+
+	#posts {
+		font-size: 25px;
+		font-weight: 600;
+		color: #f79402;
+	}
+
+	#posMar {
+		margin-left: 12px;
+	}
+
+	#negMar {
+		margin-left: -12px;
+	}
+
+	#abt::before {
+		content: url('https://fontawesome.com/icons/user?f=classic&s=solid&pc=%23000000');
+		width: 20px;
+		height: auto;
+		display: inline-block;
+	}
+
+	#abt_user {
+		background-color: #deefff;
+		display: block;
+		overflow: auto;
+		align-items: center;
+		box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+	}
+
+	body {
+		color: white;
+		font-family: "Trirong", serif;
+	}
+
+	#ub_img {
+		width: 100px;
+		height: 100px;
+		border-radius: 50%;
+		margin: 0 auto;
+		display: block;
+		margin-bottom: 20px;
+	}
+</style>
+
+</html>
+@stop

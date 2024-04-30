@@ -1,8 +1,5 @@
 @extends('layout')
 @section('content')
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,195 +8,181 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>User</title>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Trirong">
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="https://kit.fontawesome.com/294239cf6e.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-
-	<div class="modal fade" id="addDishModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1 class="modal-title fs-5" id="exampleModalLabel">Add Dish</h1>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<form method="POST" enctype="multipart/form-data" action="{{route('dishadd.post')}}">
-						@csrf
-						<div>
-							<label class="form-label" for="customFile">Upload Dish Image</label>
-							<input type="file" name="dish_image" class="form-control" id="customFile" />
-						</div>
-						<p style="font-size: smaller;">A dish picture is useful for people to see the final recipe</p>
-						<div class="mb-3">
-							<label class="form-label">Name of Dish</label>
-							<input type="text" name="dish_name" class="form-control" id="input_nameOfDish">
-						</div>
-						<p style="font-size: big;">Select Cuisine Type</p>
-
-						<select name="dish_cuisine" class="selectpicker">
-							<option value="American">American</option>
-							<option value="Chinese">Chinese</option>
-							<option value="Indian">Indian</option>
-							<option value="Italian">Italian</option>
-						</select>
-						<p style="font-size: big; margin-top:20px">Ingredients</p>
-						<textarea id="ta_ingr" name="dish_ingredients" rows="4" cols="47"></textarea>
-
-						<p style="font-size: big; margin-top:20px">Directions</p>
-						<textarea id="ta_dir" name="dish_dir" rows="4" cols="47"></textarea>
-
-						<p style="font-size: big; margin-top:20px">Preparation Time</p>
-						<input type="text" name="dish_time" placeholder="30 Minutes, 1.5 Hours etc." style="padding-right: 250px;">
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-							<button type="submit" class="btn btn-primary">Save changes</button>
-						</div>
-					</form>
-
-				</div>
-
-			</div>
-		</div>
-	</div>
 	<div class="container">
 		<div class="row">
+			<!-- User Basic Container -->
 			<div class="col-3">
-
 				<div class="me-2 mt-5">
-					<div id="user_basic_container" style=" background-color: #deefff; height:580px;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
+					<div id="user_basic_container" style="background-color: #f79402; height:auto;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; border-radius:20px; padding: 20px;">
 						<div class=".img-fluid. max-width:500px;" id="user_basic">
-							<img src="{{asset('icon_userprofile.png')}}" id="ub_img">
-							<p class="h3" id="ub_name">{{Auth::user()->name}}</p>
-							<p class="h6" id="ub_desc">Testing new user.Loves cooking in free time. LPU undergrad student.</p>
+							<img src="{{asset('icon_userprofile.png')}}" id="ub_img" style="width: 100px; height: 100px; border-radius: 50%;">
+							<p class="h3" id="ub_name" style="margin-top: 20px;">{{Auth::user()->name}}</p>
+							<p class="h6" id="ub_desc">Testing new user. Loves cooking in free time. LPU undergrad student.</p>
 						</div>
-
-
-						<div id="ub_deets1">
+						<div class="ubDetails" style="margin-top: 20px;">
 							<p>Level</p>
 							<h5><span class="badge bg-secondary">Novice</span></h5>
 						</div>
-						<div id="ub_deets2">
+						<div class="ubDetails">
 							<p>Member Since</p>
 							<h5><span class="badge bg-secondary">Nov 11, 2023</span></h5>
 						</div>
-
-						<div class="row">
+						<div class="row" style="margin-top: 20px;">
 							<div class="col-6">
-								<a type="button" href="/logout" class="btn btn-primary" style="display:flex; margin: auto;margin-top :20px;width:80px">Logout</a>
+								<a type="button" href="/logout" class="btn btnStyle" style="display:flex; margin: auto;width:100%">Logout</a>
 							</div>
 							<div class="col-6">
-								<a type="button" href="#" class="btn btn-primary" style="display:flex; width:60px;margin-top :20px">Edit</a>
+								<a type="button" href="#" class="btn btnStyle" style="display:flex; width:100%">Edit</a>
 							</div>
 						</div>
-						<div>
-
-						</div>
-
 					</div>
 				</div>
 			</div>
-
+			<!-- Segment Control -->
 			<div class="col-9">
-				<!-- Right Column Row -1 Starts Below -->
-				<div class="row mt-5 ms-6" id="abt_user">
-					<div class="col-12">
-						<div class="row w-100 ">
-							<div class="col-12 d-flex align-content-center ">
-								<h1 style="font-size: 25px;font-weight:600; margin-top:20px" id="abt">About</h1>
-							</div>
-
-						</div>
-						<div class="row mt-2 ">
-							<div class="col-3" id="posMar">
-								<p style="font-weight: 600;">Full Name</p>
-							</div>
-							<div class="col-3" id="negMar">
-								<p>{{Auth::user()->name}}</p>
-							</div>
-							<div class="col-3" id="posMar">
-								<p style="font-weight: 600;">Gender</p>
-							</div>
-							<div class="col-3" id="negMar">
-								<p>Male</p>
+				<div class="row mt-5 ms-6 mb-6">
+					<div class="col-12 mb-5">
+						<div class="row w-100">
+							<div class="col-12 d-flex align-content-center justify-content-start">
+								<ul class="nav nav-tabs justify-content-start" id="myTab" role="tablist">
+									<li class="nav-item" role="presentation">
+										<button class="nav-link active" id="userPostsTab" data-bs-toggle="tab" data-bs-target="#userPosts" type="button" role="tab" aria-controls="userPosts" aria-selected="true">Your Posts</button>
+									</li>
+									<li class="nav-item" role="presentation">
+										<button class="nav-link " id="profileTab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
+									</li>
+								</ul>
 							</div>
 						</div>
-
-						<div class="row">
-							<div class="col-3">
-								<p style="font-weight: 600;" id="posMar">Email</p>
-							</div>
-							<div class="col-3" id="negMar">
-								<p>{{Auth::user()->email}}</p>
-							</div>
-							<div class="col-3">
-								<p style="font-weight: 600; margin-left: 20px;" id="posMar">Location</p>
-							</div>
-							<div class="col-3" id="negMar">
-								<p>Hyderabad</p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- Right column Row - 2 starts below -->
-				<div class="row" id="user_posts">
-					<div class="col-12" style="background-color: #deefff; " ;>
-						<div class="row mt-4">
-							<div class="col-3">
-								<p class="ms-4" style="font-size: 25px;font-weight:600" id="posts">Posts</p>
-							</div>
-							<div class="col-9 d-flex justify-content-end ">
-								<!-- Button trigger modal -->
-								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDishModal">
-									Create Post
-								</button>
-							</div>
-						</div>
-						<div class="row">
-
-							<div class="container_user_posts" style="margin-left: 60px;height:580px;">
-								<div class="container d-flex justify-content-center  flex-wrap" style="padding-right: 120px;">
-									@foreach ($dishes_all as $dishes)
-									<div class="container_allDishes">
-										<div class="card" style="width: 16rem;margin-bottom: 20px;margin-right:20px; box-shadow:20p 20px black">
-											<img src="{{URL::asset('uploads/dishes/' . $dishes->dish_image)}}" class="card-img-top">
-											<div class="card-body" style="box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;">
-												<h5 class="card-title">{{$dishes->dish_name}}</h5>
-												<h6 class="card-subtitle mb-2 text-muted">Cuisine: {{$dishes->dish_cuisine}} </h6>
-												<p class="card-text">Ingredients: {{$dishes->dish_ingredients}}</p>
-												<p class="card-text">Preparation Time: {{$dishes->dish_time}}</p>
-											</div>
+						<div class="tab-content" id="myTabContent">
+							<div class="tab-pane fade show active" id="currUserPosts" role="tabpanel" aria-labelledby="userPostsTab">
+								<!-- Your Posts section content here -->
+								<div class="col-12" style="background-color: whitesmoke; padding: 20px;">
+									<div class="row mt-4">
+										<div class="col-12">
+											<p class="ms-4" style="font-size: 25px;font-weight:600; color: #f79402;" id="posts">Your Posts</p>
 										</div>
 									</div>
-									@endforeach
+									<div class="row" style="overflow-y: auto; max-height: 300px;">
+										<div class="container_user_posts" style="margin-top: 20px;">
+											<div class="container d-flex justify-content-start flex-wrap" style="padding-right: 120px;">
+												@foreach ($dishes_all as $dishes)
+												<div class="container_allDishes" style="width: calc(33.33% - 20px); margin-right: 20px; margin-bottom: 20px;">
+													<div class="card" style="width: 100%;">
+														<img src="{{URL::asset('uploads/dishes/' . $dishes->dish_image)}}" class="card-img-top">
+														<div class="card-body">
+															<h5 class="card-title">{{$dishes->dish_name}}</h5>
+															<h6 class="card-subtitle mb-2 text-muted">Cuisine: {{$dishes->dish_cuisine}} </h6>
+															<p class="card-text">Ingredients: {{$dishes->dish_ingredients}}</p>
+															<p class="card-text">Preparation Time: {{$dishes->dish_time}}</p>
+														</div>
+													</div>
+												</div>
+												@endforeach
+											</div>
+										</div>
 
+									</div>
 								</div>
 							</div>
 
-
+							<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profileTab">
+								<!-- Profile section content here -->
+								<div class="row mt-5 ms-6">
+									<div class="col-12">
+										<div class="row w-100">
+											<div class="col-12 d-flex align-content-center">
+												<h1 style="font-size: 25px;font-weight:600; margin-top:20px; color: #f79402;" id="abt">Profile</h1>
+											</div>
+										</div>
+										<div class="row mt-2 userProfile">
+											<div class="col-3" id="posMar">
+												<p style="font-weight: 600;">Full Name</p>
+											</div>
+											<div class="col-3" id="negMar">
+												<p>{{Auth::user()->name}}</p>
+											</div>
+											<div class="col-3" id="posMar">
+												<p style="font-weight: 600;">Gender</p>
+											</div>
+											<div class="col-3" id="negMar">
+												<p>Male</p>
+											</div>
+										</div>
+										<div class="row userProfile">
+											<div class="col-3">
+												<p style="font-weight: 600;" id="posMar">Email</p>
+											</div>
+											<div class="col-3" id="negMar">
+												<p>{{Auth::user()->email}}</p>
+											</div>
+											<div class="col-3">
+												<p style="font-weight: 600; margin-left: 20px;" id="posMar">Location</p>
+											</div>
+											<div class="col-3" id="negMar">
+												<p>Hyderabad</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>
 	</div>
-	</div>
 
+	<div class="modal fade" id="addDishModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<!-- Modal content -->
 	</div>
-
 </body>
+
 <script>
 	$(document).ready(function() {
-		$('.selectpicker').change(function() {
-			var selectedCuisine = $(this).children("option:selected").val();
-			console.log(selectedCuisine);
-		})
-	})
+		$('#userPostsTab').click(function() {
+			$('#currUserPosts').show();
+			$('#profile').hide();
+		});
+		$('#profileTab').click(function() {
+			$('#currUserPosts').hide();
+			$('#profile').show();
+		});
+	});
 </script>
-
 <style type="text/css">
+	.mb-6{
+		margin-bottom: 6rem;
+	}
+	.ubDetails {
+		background-color: whitesmoke;
+		width: 90%;
+		height: auto;
+		margin: auto;
+		display: flex;
+		justify-content: space-between;
+		padding-top: 8px;
+		padding-left: 12px;
+		padding-right: 12px;
+		color: black;
+		border-radius: 4px;
+	}
+
+	.btnStyle {
+		background-color: white;
+		color: #f79402;
+	}
+
+	.btnStyle1 {
+		background-color: #f79402;
+		color: white;
+	}
+
 	.container_user_posts {
 		display: flex;
 		flex-wrap: wrap;
@@ -209,6 +192,10 @@
 
 	.card {
 		background-color: whitesmoke;
+	}
+
+	.userProfile {
+		color: black;
 	}
 
 	.selectpicker {
@@ -253,15 +240,19 @@
 
 	#user_posts {
 		box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-		background-color: #deefff;
-		height: 52%;
-		align-items: center;
+		background-color: whitesmoke;
 		margin-top: 30px;
+		padding: 20px;
+	}
+
+	#posts {
+		font-size: 25px;
+		font-weight: 600;
+		color: #f79402;
 	}
 
 	#posMar {
 		margin-left: 12px;
-		
 	}
 
 	#negMar {
@@ -280,47 +271,25 @@
 		display: block;
 		overflow: auto;
 		align-items: center;
-		 box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-
-	}
-
-	#ub_deets1,
-	#ub_deets2 {
-		background-color: #9fb1bf;
-		width: 90%;
-		height: auto;
-		margin: auto;
-		display: flex;
-		justify-content: space-between;
-		padding-top: 8px;
-		padding-left: 12px;
-		padding-right: 12px;
-
-	}
-
-	#ub_img {
-		width: 80%;
-		height: 40vh;
-		margin-left: 10%;
-		margin-top: 8%;
-	}
-
-	#ub_desc {
-		margin-left: 6%;
-
-	}
-
-	#ub_name {
-		margin-left: 30%;
-		margin-top: 4%;
+		box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 	}
 
 	body {
-		background-image: url('/bg_signup.jpg');
+		color: white;
+		font-family: "Trirong", serif;
 	}
 
-	* {
-		font-family: "Trirong", serif;
+	#ub_img {
+		width: 100px;
+		height: 100px;
+		border-radius: 50%;
+		margin: 0 auto;
+		display: block;
+		margin-bottom: 20px;
+	}
+
+	.nav-tabs .nav-link {
+		color: orange;
 	}
 </style>
 
