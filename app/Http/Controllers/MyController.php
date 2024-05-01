@@ -139,5 +139,9 @@ class MyController extends Controller
         return redirect(route('login'));
     }
 
+    function showAllRecipes()
+    {
+        return view('a7_allrecipes');
+    }
     
 }

@@ -52,7 +52,7 @@
 
 		#home_t1 {
 			font-family: "Trirong", serif;
-			background-color: #f79402;
+			background-color:#f79402 ;
 			color: white;
 			border-top-left-radius: 20px;
 			border-bottom-left-radius: 20px;

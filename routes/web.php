@@ -36,3 +36,5 @@ Route::post('/userprofile', [MyController::class,'add_dish']) -> name('dishadd.p
 
 Route::get('/dish/{dishId}', [MyController::class, 'showDishFull']) -> name('dishcomplete');
 
+Route::get('/recipes', [MyController::class, 'showAllRecipes']) ->name('allRecipes');
+
