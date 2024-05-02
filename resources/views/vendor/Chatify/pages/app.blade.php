@@ -1,4 +1,6 @@
 @include('Chatify::layouts.headLinks')
+@extends('layout')
+@section('content')
 <div class="messenger">
     {{-- ----------------------Users/Groups lists side---------------------- --}}
     <div class="messenger-listView {{ !!$id ? 'conversation-active' : '' }}">
@@ -22,29 +24,39 @@
         </div>
         {{-- tabs and lists --}}
         <div class="m-body contacts-container">
-           {{-- Lists [Users/Group] --}}
-           {{-- ---------------- [ User Tab ] ---------------- --}}
-           <div class="show messenger-tab users-tab app-scroll" data-view="users">
-               {{-- Favorites --}}
-               <div class="favorites-section">
-                <p class="messenger-title"><span>Favorites</span></p>
-                <div class="messenger-favorites app-scroll-hidden"></div>
-               </div>
-               {{-- Saved Messages --}}
-               <p class="messenger-title"><span>Your Space</span></p>
-               {!! view('Chatify::layouts.listItem', ['get' => 'saved']) !!}
-               {{-- Contact --}}
-               <p class="messenger-title"><span>All Messages</span></p>
-               <div class="listOfContacts" style="width: 100%;height: calc(100% - 272px);position: relative;"></div>
-           </div>
-             {{-- ---------------- [ Search Tab ] ---------------- --}}
-           <div class="messenger-tab search-tab app-scroll" data-view="search">
+            {{-- Lists [Users/Group] --}}
+            {{-- ---------------- [ User Tab ] ---------------- --}}
+            <div class="show messenger-tab users-tab app-scroll" data-view="users">
+                {{-- Favorites --}}
+                <div class="favorites-section">
+                    <p class="messenger-title"><span>Favorites</span></p>
+                    <div class="messenger-favorites app-scroll-hidden"></div>
+                </div>
+                {{-- Saved Messages --}}
+                <p class="messenger-title"><span>Your Space</span></p>
+                {!! view('Chatify::layouts.listItem', ['get' => 'saved']) !!}
+                {{-- Contact --}}
+                <p class="messenger-title"><span>All Messages</span></p>
+                <div class="listOfContacts-container">
+                    <div class="listOfContacts">
+                        {{-- Loop through other users --}}
+                        @isset($otherUsers)
+                        @foreach($otherUsers as $otherUser)
+                        <a href="/messages/{{ $otherUser->id }}" class="user-tile">{{ $otherUser->name }}</a>
+                        {{-- You can display other user information as needed --}}
+                        @endforeach
+                        @endisset
+                    </div>
+                </div>
+            </div>
+            {{-- ---------------- [ Search Tab ] ---------------- --}}
+            <div class="messenger-tab search-tab app-scroll" data-view="search">
                 {{-- items --}}
                 <p class="messenger-title"><span>Search</span></p>
                 <div class="search-records">
                     <p class="message-hint center-el"><span>Type to search..</span></p>
                 </div>
-             </div>
+            </div>
         </div>
     </div>
 
@@ -108,5 +120,33 @@
     </div>
 </div>
 
+<style>
+    .user-tile {
+        display: block;
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        font-size: 16px;
+        /* Adjust the font size as needed */
+        text-decoration: none;
+        /* Remove default underline */
+        color: #333;
+        /* Text color */
+    }
+
+    .user-tile:hover {
+        background-color: #f0f0f0;
+        cursor: pointer;
+    }
+
+    .listOfContacts-container {
+        height: calc(100% - 272px);
+        /* Adjust the height as needed */
+        overflow-y: auto;
+    }
+</style>
+
 @include('Chatify::layouts.modals')
 @include('Chatify::layouts.footerLinks')
+@stop

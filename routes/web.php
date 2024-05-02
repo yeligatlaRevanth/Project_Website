@@ -39,11 +39,4 @@ Route::view('/a5_addDishModal', 'a5_addDishModal')->name('addDishModal');
 
 
 
-
-// Route::get('/messages', [ChatsController::class, 'displayMessages']);
-Route::get('/messages/{userId}', [ChatsController::class, 'fetchMessages'])->name('messages');
-Route::post('/messages/{userId}', [ChatsController::class, 'sendMessage'])->name('messages.store');
-
-Route::get('/userMessages', [MyController::class, 'userMessages'])->name('userMessages');
-
 ?>
