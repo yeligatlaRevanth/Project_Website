@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 	<style type="text/css">
+		
 		body {
 			background-color: whitesmoke;
 			overflow-x: hidden;
@@ -23,7 +24,8 @@
 		.segment-control {
 			display: flex;
 			justify-content: flex-start;
-			margin-bottom: 10px; /* Adjusted margin */
+			margin-bottom: 10px;
+			/* Adjusted margin */
 			margin-left: 20px;
 			/* Adjusted margin */
 		}
@@ -52,7 +54,7 @@
 
 		#home_t1 {
 			font-family: "Trirong", serif;
-			background-color:#f79402 ;
+			background-color: #f79402;
 			color: white;
 			border-top-left-radius: 20px;
 			border-bottom-left-radius: 20px;
@@ -129,7 +131,7 @@
 			}
 		}
 
-		.container1{
+		.container1 {
 			margin-left: 4rem;
 		}
 

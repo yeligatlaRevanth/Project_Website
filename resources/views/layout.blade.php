@@ -5,10 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DishExchange</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
+    <link href='https://fonts.googleapis.com/css?family=Trirong' rel='stylesheet'> 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </head>
 
@@ -30,16 +29,22 @@
                         <a class="nav-link" href="/recipes">Recipes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/blogs">Blogs</a>
+                        <a class="nav-link" href="/messages">Messages</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/contact">Contact Us</a>
                     </li>
                 </ul>
-                <form class="d-flex rounded-pill">
-                    <input class="form-control me-2 rounded-pill" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-orange rounded-pill" type="submit"><i class="fa fa-search text-orange"></i></button>
+                <form id="searchForm" class="d-flex rounded-pill" action="/search">
+                    <input id="searchInput" class="form-control me-2 rounded-pill" type="search" placeholder="Search" aria-label="Search" autocomplete="off">
+                    <button class="btn btn-outline-orange rounded-pill" type="submit">
+                        <i class="fas fa-search"></i> <!-- Font Awesome search icon -->
+                    </button>
+
                 </form>
+
+                <div id="searchResults" style="position: absolute; z-index: 1;"></div>
+
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="/userprofile">
@@ -66,16 +71,19 @@
                         <a class="nav-link" href="/recipes">Recipes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/blogs">Blogs</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="/contact">Contact Us</a>
                     </li>
                 </ul>
-                <form class="d-flex rounded-pill">
-                    <input class="form-control me-2 rounded-pill" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-orange rounded-pill" type="submit"><i class="fa fa-search text-orange"></i></button>
+                <form id="searchForm" class="d-flex rounded-pill" action="/search">
+                    <input id="searchInput" class="form-control me-2 rounded-pill" type="search" placeholder="Search" aria-label="Search" autocomplete="off">
+                    <button class="btn btn-outline-orange rounded-pill" type="submit">
+                        <i class="fas fa-search"></i> <!-- Font Awesome search icon -->
+                    </button>
+
                 </form>
+
+                <div id="searchResults" style="position: absolute; z-index: 1;"></div>
+
                 <ul class="navbar-nav">
                     <li class="nav-item login-item">
                         <a class="nav-link" href="/login">Login</a>
@@ -104,7 +112,7 @@
         <!-- Copyright -->
         <div class="container pt-4">
             <!-- Section: Social media -->
-            <section >
+            <section>
                 <!-- Facebook -->
                 <a class="btn btn-link btn-floating btn-lg text-dark m-1" href="#!" role="button" data-mdb-ripple-color="dark"><i class="fab fa-facebook-f"></i></a>
 
@@ -129,9 +137,50 @@
 
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 
 <style>
+    #searchResults {
+        position: absolute;
+        top: calc(100% + 10px);
+        /* Adjust the distance from the search bar */
+        left: 0;
+        width: 100%;
+        /* Take up full width */
+        background-color: white;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        z-index: 1000;
+        /* Ensure it appears above other elements */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        /* Add a subtle shadow */
+        max-height: 200px;
+        /* Limit the height of the results container */
+        overflow-y: auto;
+        /* Add vertical scroll if needed */
+        padding: 5px 0;
+        /* Add padding to the results */
+    }
+
+    .search-result-item {
+        cursor: pointer;
+        padding: 10px;
+    }
+
+    .search-result-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* Change text color of search results */
+    #searchResults a {
+        color: black;
+    }
+
+
+    body{
+        font-family: "Trirong";
+    }
     .navbar-nav .spacer {
         margin-right: 10px;
         /* Adjust the margin as needed */
@@ -225,5 +274,58 @@
         font-family: 'Trirong', sans-serif;
     }
 </style>
+
+<!-- Your HTML and Bootstrap code -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var searchInput = document.getElementById("searchInput");
+        var searchResults = document.getElementById("searchResults");
+
+        // Hide search results on page load
+        searchResults.style.display = "none";
+
+        // Hide search results when user clicks outside the search bar
+        document.addEventListener("click", function(event) {
+            if (event.target !== searchInput && event.target !== searchResults) {
+                searchResults.style.display = "none";
+            }
+        });
+
+        searchInput.addEventListener("input", function() {
+            var searchQuery = this.value.trim();
+
+            if (searchQuery.length >= 3) {
+                fetch('/search/suggestions?searchText=' + searchQuery)
+                    .then(response => response.json())
+                    .then(data => {
+                        searchResults.innerHTML = "";
+
+                        if (data && data.length > 0) {
+                            data.forEach(result => {
+                                var suggestion = document.createElement("div");
+                                suggestion.textContent = result.dish_name; // Adjust based on your data structure
+                                suggestion.classList.add("search-result-item");
+                                searchResults.appendChild(suggestion);
+                            });
+                        } else {
+                            var suggestion = document.createElement("div");
+                            suggestion.textContent = "No suggestions found";
+                            suggestion.classList.add("search-result-item");
+                            searchResults.appendChild(suggestion);
+                        }
+
+                        // Display search results
+                        searchResults.style.display = "block";
+                    })
+                    .catch(error => console.error('Error fetching search suggestions:', error));
+            } else {
+                // Hide search results if query is less than 3 characters
+                searchResults.style.display = "none";
+            }
+        });
+    });
+</script>
+
 
 </html>

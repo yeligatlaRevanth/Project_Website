@@ -41,7 +41,7 @@ class MyController extends Controller
         $dishes_all = DB::select($query);
 
         error_log($query);
-        return view('/a4_home')->with('dishes_all',$dishes_all);
+        return view('/a4_home')->with('dishes_all', $dishes_all);
     }
 
     function fun_userprofile()
@@ -50,7 +50,7 @@ class MyController extends Controller
         $dishes_all = DB::select($query);
 
         error_log($query);
-        return view('/a5_userprofile')->with('dishes_all',$dishes_all);
+        return view('/a5_userprofile')->with('dishes_all', $dishes_all);
     }
 
 
@@ -97,17 +97,14 @@ class MyController extends Controller
     {
         $dish = new Dish();
         $dish->dish_email = auth()->user()->email;
-//Image
-        if($request->hasFile('dish_image'))
-        {
+        //Image
+        if ($request->hasFile('dish_image')) {
             $file = $request->file('dish_image');
             $extension = $file->getClientOriginalExtension();
-            $filename = time(). '.' . $extension;
+            $filename = time() . '.' . $extension;
             $file->move('uploads/dishes', $filename);
-            $dish->dish_image  =$filename;
-        }
-        else
-        {
+            $dish->dish_image  = $filename;
+        } else {
             return $request;
             $dish->dish_image = '';
         }
@@ -117,17 +114,17 @@ class MyController extends Controller
         $dish->dish_dir = $request->input('dish_dir');
         $dish->dish_time = $request->input('dish_time');
 
-        $dish->save();    
+        $dish->save();
         $query = 'SELECT id,dish_name,dish_image,dish_cuisine,dish_time,dish_ingredients FROM user_dishes WHERE dish_email = "' . auth()->user()->email . '"';
         $dishes_all = DB::select($query);
-        return view('a5_userprofile')->with('dishes_all',$dishes_all);
+        return view('a5_userprofile')->with('dishes_all', $dishes_all);
     }
 
 
 
     function showDishFull($dishId)
     {
-        $query = 'SELECT id,dish_email,dish_name,dish_image,dish_cuisine,dish_time,dish_ingredients, dish_dir FROM user_dishes WHERE id = "'. $dishId. '"';
+        $query = 'SELECT id,dish_email,dish_name,dish_image,dish_cuisine,dish_time,dish_ingredients, dish_dir FROM user_dishes WHERE id = "' . $dishId . '"';
         $maindish = DB::select($query);
         return view('a6_dish')->with('maindish', $maindish);
     }
@@ -143,5 +140,20 @@ class MyController extends Controller
     {
         return view('a7_allrecipes');
     }
+
     
+    public function suggestions(Request $request)
+    {
+        $searchText = $request->input('searchText');
+        // Simulate search suggestions (replace with your actual logic)
+        $suggestions = Dish::where('dish_name', 'like', "%{$searchText}%")->limit(5)->get();
+
+
+        return response()->json($suggestions);
+    }
+
+    public function userMessages(Request $request)
+    {
+        return view('a8_userMessages');
+    }
 }

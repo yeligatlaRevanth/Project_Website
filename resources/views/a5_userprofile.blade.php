@@ -58,14 +58,18 @@
 									</li>
 								</ul>
 							</div>
+
 						</div>
 						<div class="tab-content" id="myTabContent">
 							<div class="tab-pane fade show active" id="currUserPosts" role="tabpanel" aria-labelledby="userPostsTab">
 								<!-- Your Posts section content here -->
 								<div class="col-12" style="background-color: whitesmoke; padding: 20px;">
 									<div class="row mt-4">
-										<div class="col-12">
+										<div class="col-9">
 											<p class="ms-4" style="font-size: 25px;font-weight:600; color: #f79402;" id="posts">Your Posts</p>
+										</div>
+										<div class="col-3">
+											<button type="button" id="btnModal" class="btn btnStyle1" data-bs-toggle="modal" data-bs-target="#addDishModal">Create</button>
 										</div>
 									</div>
 									<div class="row" style="overflow-y: auto; max-height: 300px;">
@@ -139,9 +143,38 @@
 	</div>
 
 	<div class="modal fade" id="addDishModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<!-- Modal content -->
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Add Dish</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<!-- Content loaded from a5_addDishModal.blade.php -->
+					<div id="addDishContent"></div>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
+<script>
+	$(document).ready(function() {
+		$('#addDishModal').on('show.bs.modal', function(event) {
+			var modal = $(this);
+			// Load content from a5_addDishModal.blade.php using AJAX
+			$.ajax({
+				url: '{{ route("addDishModal") }}',
+				type: 'GET',
+				success: function(response) {
+					modal.find('#addDishContent').html(response);
+				},
+				error: function(xhr, status, error) {
+					console.error(xhr.responseText);
+				}
+			});
+		});
+	});
+</script>
 
 <script>
 	$(document).ready(function() {
@@ -156,9 +189,21 @@
 	});
 </script>
 <style type="text/css">
-	.mb-6{
+	.modal-content {
+		width: auto;
+		height: auto;
+		max-width: 90vw;
+		/* Adjust maximum width as needed */
+		max-height: 90vh;
+		/* Adjust maximum height as needed */
+		overflow: scroll;
+	}
+
+
+	.mb-6 {
 		margin-bottom: 6rem;
 	}
+
 	.ubDetails {
 		background-color: whitesmoke;
 		width: 90%;
@@ -171,6 +216,11 @@
 		padding-right: 12px;
 		color: black;
 		border-radius: 4px;
+	}
+
+	.btnStyle1 {
+		color: white;
+		background-color: #f79402;
 	}
 
 	.btnStyle {
