@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MyController;
-use Monolog\Handler\RotatingFileHandler;
+use App\Http\Controllers\ChatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,16 +31,19 @@ Route::get('/contact', [MyController::class, 'fun_contact'])->name('contact');
 Route::get('/logout', [MyController::class, 'logout'])->name('logout');
 
 Route::get('/userprofile', [MyController::class, 'fun_userprofile'])->name('userprofile');
-
 Route::post('/userprofile', [MyController::class, 'add_dish'])->name('dishadd.post');
-
 Route::get('/dish/{dishId}', [MyController::class, 'showDishFull'])->name('dishcomplete');
-
 Route::get('/recipes', [MyController::class, 'showAllRecipes'])->name('allRecipes');
 Route::get('/search/suggestions', [MyController::class, 'suggestions']);
-
 Route::view('/a5_addDishModal', 'a5_addDishModal')->name('addDishModal');
 
 
 
-Route::get('/messages', [MyController::class, 'userMessages']) -> name('userMessages');
+
+// Route::get('/messages', [ChatsController::class, 'displayMessages']);
+Route::get('/messages/{userId}', [ChatsController::class, 'fetchMessages'])->name('messages');
+Route::post('/messages/{userId}', [ChatsController::class, 'sendMessage'])->name('messages.store');
+
+Route::get('/userMessages', [MyController::class, 'userMessages'])->name('userMessages');
+
+?>

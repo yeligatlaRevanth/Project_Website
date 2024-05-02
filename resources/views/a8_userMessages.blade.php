@@ -13,42 +13,16 @@
             <div class="user-list">
                 <h2 style="font-size: x-large;border-bottom:3px solid white;">Friends</h2>
                 <!-- User list content goes here -->
-                <!-- User list content goes here -->
-                <!-- User list content goes here -->
-                <ul style="padding-top: 10px; list-style: none; padding-right:30px;">
+                <ul id="user-list" style="padding-top: 10px; list-style: none; padding-right:30px;">
+                    @foreach($users as $user)
                     <li style="margin-bottom: 10px;">
-                        <div style="display: flex; align-items: center;">
+                        <div class="user" style="display: flex; align-items: center; cursor: pointer;" data-user-id="{{ $user->id }}">
                             <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="User Icon" style="width: 30px; margin-right: 10px;">
-                            <span>User John</span>
+                            <span>{{ $user->name }}</span>
                         </div>
                     </li>
-                    <li style="margin-bottom: 10px;">
-                        <div style="display: flex; align-items: center;">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="User Icon" style="width: 30px; margin-right: 10px;">
-                            <span>User Smith</span>
-                        </div>
-                    </li>
-                    <li style="margin-bottom: 10px;">
-                        <div style="display: flex; align-items: center;">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="User Icon" style="width: 30px; margin-right: 10px;">
-                            <span>User Alice</span>
-                        </div>
-                    </li>
-                    <li style="margin-bottom: 10px;">
-                        <div style="display: flex; align-items: center;">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar4.png" alt="User Icon" style="width: 30px; margin-right: 10px;">
-                            <span>User Mike</span>
-                        </div>
-                    </li>
-                    <li style="margin-bottom: 10px;">
-                        <div style="display: flex; align-items: center;">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar5.png" alt="User Icon" style="width: 30px; margin-right: 10px;">
-                            <span>User Emily</span>
-                        </div>
-                    </li>
+                    @endforeach
                 </ul>
-
-
             </div>
         </div>
 
@@ -64,36 +38,14 @@
                 <div class="chat-area" style="height: 60vh;"> <!-- Set the width as needed -->
                     <!-- Chat history -->
                     <div class="chat-history">
-                        <!-- Message history -->
-                        <ul class="m-b-0">
-                            <li class="clearfix" style="list-style: none;">
-                                <div class="message-data" style="display: flex; align-items: center;">
-                                    <div style="display: flex; flex-direction: column;">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar" style="width: 30px; margin-right: 10px;">
-                                        <span class="message-data-time" style="font-size: 10px;">10:10 AM, Today</span>
-                                    </div>
-                                    <div class="message other-message" style="background-color: #e2e2e2; border-radius: 10px; padding: 5px;"> Hi Aiden, how are you? How is the project coming along? </div>
-                                </div>
-                            </li>
-                            <!-- Add more message items here -->
-                            <li class="clearfix" style="list-style: none;">
-                                <div class="message-data" style="display: flex; align-items: center; justify-content: flex-end;">
-                                    <div class="message my-message" style="background-color: #d4e6f1; border-radius: 10px; padding: 5px;"> Hi! I'm doing great, thanks for asking. The project is coming along nicely. </div>
-
-                                    <div style="display: flex; flex-direction: column;">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="avatar" style="width: 30px; margin-left: 10px;">
-                                        <span class="message-data-time" style="font-size: 10px;">10:12 AM, Today</span>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+                        <!-- Message history will be dynamically populated -->
                     </div>
                 </div>
                 <!-- Chat input -->
                 <div class="chat-input">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Enter text here...">
-                        <button class="btn btn-send-message" type="button"><i class="fa fa-paper-plane"></i></button>
+                        <input type="text" id="message-input" class="form-control" placeholder="Enter text here...">
+                        <button id="send-message" class="btn btn-send-message" type="button"><i class="fa fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
@@ -140,4 +92,113 @@
         color: white;
     }
 </style>
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event listener for user list items
+        // Event listener for user list items
+        document.querySelectorAll('.user').forEach(item => {
+            item.addEventListener('click', event => {
+                // Find the closest ancestor with the 'data-user-id' attribute
+                const userId = event.target.closest('.user').getAttribute('data-user-id');
+                console.log('User ID:', userId); // Check the extracted user ID
+                const username = event.target.textContent.trim();
+                loadChatHistory(userId, username);
+                // Update the username display
+                document.querySelector('.row-user-name h5').textContent = username;
+
+                // Update URL with user ID
+                history.pushState(null, null, `/messages/${userId}`);
+            });
+        });
+
+
+        // Function to load chat history for a specific user
+        function loadChatHistory(userId, username) {
+            // Clear the existing chat history
+            document.querySelector('.chat-history').innerHTML = '';
+
+            // Fetch chat history from the server
+            axios.get(`/messages/${userId}`)
+                .then(function(response) {
+                    // Process the received chat history data
+                    const chatHistory = response.data;
+                    console.log(chatHistory);
+
+                    // Check if chatHistory is an array
+                    if (Array.isArray(chatHistory)) {
+                        // Append each message to the chat history
+                        chatHistory.forEach(function(message) {
+                            appendMessage(message);
+                        });
+                    } else {
+                        console.error('Chat history is not an array:', chatHistory);
+                    }
+                })
+                .catch(function(error) {
+                    console.error(error);
+                });
+        }
+
+        // Function to append a message to the chat history
+        function appendMessage(message) {
+            const timestamp = message.timestamp;
+            const content = message.content;
+            const sender = message.sender;
+
+            const messageData = `
+                <li class="clearfix" style="list-style: none;">
+                    <div class="message-data" style="display: flex; align-items: center;">
+                        <div style="display: flex; flex-direction: column;">
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar" style="width: 30px; margin-right: 10px;">
+                            <span class="message-data-time" style="font-size: 10px;">${timestamp}</span>
+                        </div>
+                        <div class="message other-message" style="background-color: #e2e2e2; border-radius: 10px; padding: 5px;">${content}</div>
+                    </div>
+                </li>
+            `;
+            // Append the new message to the chat history
+            document.querySelector('.chat-history').innerHTML += messageData;
+        }
+
+        var pusher = new Pusher('465e3653be5b696fa7a2', {
+            cluster: 'ap2',
+            encrypted: true
+        });
+
+        var channel = pusher.subscribe('chat');
+
+        // Event listener for receiving messages
+        channel.bind('App\\Events\\MessageSent', function(data) {
+            // Handle received message
+            appendMessage(data);
+        });
+
+        // Event listener for sending messages
+        // Event listener for sending messages
+        document.getElementById('send-message').addEventListener('click', function() {
+            var messageInput = document.getElementById('message-input').value;
+            var userId = document.querySelector('.row-user-name h5').textContent.trim(); // Get the userId from the username display
+            // Send the message to the server
+            axios.post(`/messages/${userId}`, { // Include userId in the URL
+                    message: messageInput
+                })
+                .then(function(response) {
+                    // Check if the response contains a message
+                    if (response.data && response.data.message) {
+                        // Append the sent message to the chat history
+                        appendMessage(response.data.message);
+                        // Clear the message input field
+                        document.getElementById('message-input').value = '';
+                    } else {
+                        console.error('Message not found in response:', response);
+                    }
+                })
+                .catch(function(error) {
+                    console.error(error);
+                });
+        });
+
+    });
+</script>
 @endsection

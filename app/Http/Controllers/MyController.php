@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use App\Models\Message;
 
 class MyController extends Controller
 {
@@ -141,7 +142,7 @@ class MyController extends Controller
         return view('a7_allrecipes');
     }
 
-    
+
     public function suggestions(Request $request)
     {
         $searchText = $request->input('searchText');
@@ -154,6 +155,10 @@ class MyController extends Controller
 
     public function userMessages(Request $request)
     {
-        return view('a8_userMessages');
+        // Get all users except the current user
+        
+        $users = User::where('id', '!=', auth()->id())->get();
+        // Pass the users data to the view
+        return view('a8_userMessages')->with('users', $users);
     }
 }
