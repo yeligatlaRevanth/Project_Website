@@ -9,28 +9,36 @@
     <title>Contact Us</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <style>
-        
         #id {
             border: none;
             outline: none;
         }
 
         .pic-side {
-            background-color: #f79402;
+            height: 100%;
         }
 
         .pic {
-            height: 200px;
-            width: 200px;
+            width: 100%;
+            height: auto;
         }
 
         .t-name {
             height: 30px;
+            width: 80%;
+            /* Adjusted width */
+        }
+
+        .t-mail {
+            height: 30px;
+            width: 80%;
+            /* Adjusted width */
         }
 
         .t-query {
             height: 200px;
-            width: 200px;
+            width: 80%;
+            /* Adjusted width */
         }
 
         .but1 {
@@ -49,34 +57,39 @@
             border-color: indigo;
         }
 
-        .body{
+        .body {
             font-family: "Trirong";
         }
     </style>
 </head>
 
 <body>
-    <div class="d-flex flex-row m-3">
-        <div class="contact-side mt-5">
-            <h1 class="ml-3">Contact Us</h1>
-            <p class="ml-3">We are here to help! Send us your query via the form below or send us an email at <a class="link" target="_blank" href="mailto:revanthyeligatla@gmail.com">revanth@gmail.com</a> for any issues you are facing.</p>
-            <form class="ml-3">
-                <p>Enter your name:</p>
-                <input class="tt t-name mb-3" type="text" id="name" name="textbox" placeholder=" Enter your name">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="contact-side mt-5">
+                    <h1 class="ml-3">Contact Us</h1>
+                    <p class="ml-3">We are here to help! Send us your query via the form below or send us an email at <a class="link" target="_blank" href="mailto:revanthyeligatla@gmail.com">revanth@gmail.com</a> for any issues you are facing.</p>
+                    <form class="ml-3">
+                        <p>Enter your name:</p>
+                        <input class="tt t-name mb-3" type="text" id="name" name="textbox" placeholder=" Enter your name">
 
-                <p>Enter your Email</p>
-                <input class="tt t-mail mb-3" type="text" id="email" name="textbox" placeholder=" Enter your Email">
+                        <p>Enter your Email</p>
+                        <input class="tt t-mail mb-3" type="text" id="email" name="textbox" placeholder=" Enter your Email">
 
-                <p>Enter your query:</p>
-                <input class="tt t-query" type="text" id="query" name="textbox" placeholder=" Enter the query">
-            </form>
-            <div class="but1">
-                <button class="but text-white bg-info mt-5">Submit</button>
+                        <p>Enter your query:</p>
+                        <input class="tt t-query" type="text" id="query" name="textbox" placeholder=" Enter the query">
+                    </form>
+                    <div class="but1">
+                        <button class="but text-white bg-info mt-5">Submit</button>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="pic-side mt-5">
-            <img class="pic" src="{{asset('icon_contactUs.jpeg')}}" />
+            <div class="col-md-6">
+                <div class="pic-side mt-5 text-center"> <!-- Center aligning the image -->
+                    <img class="pic" src="{{asset('icon_contactUs.jpeg')}}" />
+                </div>
+            </div>
         </div>
     </div>
 </body>

@@ -51,8 +51,8 @@ class MessagesController extends Controller
         error_log("Hello");
         // Get all users except the authenticated user
         $otherUsers = User::where('id', '!=', $user->id)->get();
-       
-    
+
+
         $messenger_color = $user->messenger_color;
         return view('Chatify::pages.app', [
             'id' => $id ?? 0,
@@ -255,7 +255,7 @@ class MessagesController extends Controller
             ->where('users.id', '!=', Auth::user()->id)
             ->select('users.*', DB::raw('MAX(ch_messages.created_at) max_created_at'))
             ->orderBy('max_created_at', 'desc')
-            ->groupBy('users.id')
+            ->groupBy('users.id', 'users.name', 'users.email', 'users.email_verified_at', 'users.password', 'users.remember_token', 'users.created_at', 'users.updated_at', 'users.active_status','users.avatar','users.dark_mode','users.messenger_color')
             ->paginate($request->per_page ?? $this->perPage);
 
         $usersList = $users->items();
@@ -275,6 +275,7 @@ class MessagesController extends Controller
             'last_page' => $users->lastPage() ?? 1,
         ], 200);
     }
+
 
     /**
      * Update user's list item data

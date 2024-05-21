@@ -137,9 +137,15 @@ class MyController extends Controller
         return redirect(route('login'));
     }
 
-    function showAllRecipes()
+
+
+    function func_recipes()
     {
-        return view('a7_allrecipes');
+        // Fetch latest 5 dishes
+        $latest_dishes = DB::table('user_dishes')->orderBy('id', 'desc')->get();
+
+        // Pass the fetched data to the Blade file
+        return view('a7_allrecipes')->with('latest_dishes', $latest_dishes);
     }
 
 
@@ -156,7 +162,7 @@ class MyController extends Controller
     public function userMessages(Request $request)
     {
         // Get all users except the current user
-        
+
         $users = User::where('id', '!=', auth()->id())->get();
         // Pass the users data to the view
         return view('a8_userMessages')->with('users', $users);

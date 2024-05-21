@@ -184,7 +184,8 @@
 						<button class="btn btn-link" id="scroll-left"><i class="fas fa-chevron-left"></i></button>
 						<div class="container_allDishes" id="container-all-dishes">
 							<!-- Cards content -->
-							@foreach ($dishes_all as $dishes)<div class="card"><a href="/dish/{{$dishes->id}}"><img src="{{URL::asset('uploads/dishes/' . $dishes->dish_image)}}" class="card-img-top"></a>
+							@foreach ($dishes_all as $dishes)<div class="card">
+								<a href="/dish/{{$dishes->id}}"><img src="{{URL::asset('uploads/dishes/' . $dishes->dish_image)}}" class="card-img-top"></a>
 								<div class="card-body">
 									<h5 class="card-title">{{$dishes->dish_name}}</h5>
 									<h6 class="card-subtitle mb-2 text-muted">Cuisine: {{$dishes->dish_cuisine}} </h6>

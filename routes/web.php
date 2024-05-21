@@ -33,10 +33,12 @@ Route::get('/logout', [MyController::class, 'logout'])->name('logout');
 Route::get('/userprofile', [MyController::class, 'fun_userprofile'])->name('userprofile');
 Route::post('/userprofile', [MyController::class, 'add_dish'])->name('dishadd.post');
 Route::get('/dish/{dishId}', [MyController::class, 'showDishFull'])->name('dishcomplete');
-Route::get('/recipes', [MyController::class, 'showAllRecipes'])->name('allRecipes');
 Route::get('/search/suggestions', [MyController::class, 'suggestions']);
 Route::view('/a5_addDishModal', 'a5_addDishModal')->name('addDishModal');
 
+
+
+Route::get('/recipes', [MyController::class, 'func_recipes'])->name('recipes');
 
 
 ?>

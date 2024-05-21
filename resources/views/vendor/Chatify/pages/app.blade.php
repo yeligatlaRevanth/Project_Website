@@ -37,17 +37,7 @@
                 {!! view('Chatify::layouts.listItem', ['get' => 'saved']) !!}
                 {{-- Contact --}}
                 <p class="messenger-title"><span>All Messages</span></p>
-                <div class="listOfContacts-container">
-                    <div class="listOfContacts">
-                        {{-- Loop through other users --}}
-                        @isset($otherUsers)
-                        @foreach($otherUsers as $otherUser)
-                        <a href="/messages/{{ $otherUser->id }}" class="user-tile">{{ $otherUser->name }}</a>
-                        {{-- You can display other user information as needed --}}
-                        @endforeach
-                        @endisset
-                    </div>
-                </div>
+                <div class="listOfContacts" style="width: 100%;height: calc(100% - 272px);position: relative;"></div>
             </div>
             {{-- ---------------- [ Search Tab ] ---------------- --}}
             <div class="messenger-tab search-tab app-scroll" data-view="search">
@@ -120,23 +110,20 @@
     </div>
 </div>
 
+
 <style>
     .user-tile {
-        display: block;
-        background-color: #fff;
+        background-color: #f0f0f0;
         padding: 10px;
         border-radius: 5px;
         margin-bottom: 5px;
         font-size: 16px;
         /* Adjust the font size as needed */
-        text-decoration: none;
-        /* Remove default underline */
-        color: #333;
-        /* Text color */
+        /* Add any additional styling as needed */
     }
 
     .user-tile:hover {
-        background-color: #f0f0f0;
+        background-color: #e0e0e0;
         cursor: pointer;
     }
 
@@ -145,7 +132,12 @@
         /* Adjust the height as needed */
         overflow-y: auto;
     }
+
+    .user-tile i {
+        margin-right: 5px;
+    }
 </style>
+
 
 @include('Chatify::layouts.modals')
 @include('Chatify::layouts.footerLinks')
