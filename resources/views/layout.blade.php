@@ -108,7 +108,7 @@
         <!-- Grid container -->
         <!-- Copyright -->
         <div class="text-center text-dark p-3">
-            © 2024 Capstone Project By- Durga Revanth
+            © Capstone Project - 2024
         </div>
         <!-- Copyright -->
         <div class="container pt-4">
@@ -308,6 +308,15 @@
                                 var suggestion = document.createElement("div");
                                 suggestion.textContent = result.dish_name; // Adjust based on your data structure
                                 suggestion.classList.add("search-result-item");
+
+                                // Add event listener to each search result item
+                                suggestion.addEventListener("click", function() {
+                                    // Extract dish ID from the result object
+                                    var dishId = result.id; // Assuming the ID field in the result object is named 'id'
+                                    // Update URL to /dish/$id
+                                    window.location.href = '/dish/' + dishId;
+                                });
+
                                 searchResults.appendChild(suggestion);
                             });
                         } else {
@@ -328,6 +337,7 @@
         });
     });
 </script>
+
 
 
 </html>

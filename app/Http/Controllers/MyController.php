@@ -11,16 +11,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use App\Models\Message;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class MyController extends Controller
 {
     public $my_email;
-
-    //
-    function firstfun()
-    {
-        return "This is my first function";
-    }
 
     function fun_login()
     {
@@ -38,7 +34,7 @@ class MyController extends Controller
     }
     function fun_home()
     {
-        $query = 'SELECT id,dish_email,dish_name,dish_image,dish_cuisine,dish_time,dish_ingredients FROM user_dishes';
+        $query = 'SELECT id,dish_email,dish_name,dish_image,dish_time,dish_ingredients FROM user_dishes';
         $dishes_all = DB::select($query);
 
         error_log($query);
@@ -47,11 +43,27 @@ class MyController extends Controller
 
     function fun_userprofile()
     {
-        $query = 'SELECT dish_name,dish_image,dish_cuisine,dish_time,dish_ingredients FROM user_dishes WHERE dish_email = "' . auth()->user()->email . '"';
+        // Fetch dishes associated with the user's email
+        $query = 'SELECT id, dish_name, dish_image, dish_time, dish_ingredients FROM user_dishes WHERE dish_email = "' . auth()->user()->email . '"';
         $dishes_all = DB::select($query);
 
-        error_log($query);
-        return view('/a5_userprofile')->with('dishes_all', $dishes_all);
+        // Calculate the number of posts (dishes) associated with the user's email
+        $email = auth()->user()->email;
+        $postCount = DB::table('user_dishes')->where('dish_email', $email)->count();
+
+        // Determine the user's level based on the post count
+        if ($postCount <= 5) {
+            $userLevel = 'Novice';
+        } elseif ($postCount > 5 && $postCount <= 10) {
+            $userLevel = 'Intermediate';
+        } elseif ($postCount > 10 && $postCount <= 20) {
+            $userLevel = 'Sous Chef';
+        } else {
+            $userLevel = 'Pro Chef';
+        }
+
+        // Pass both dishes_all and userLevel to the view
+        return view('/a5_userprofile', compact('dishes_all', 'userLevel'));
     }
 
 
@@ -69,63 +81,135 @@ class MyController extends Controller
         return redirect(route('login'))->with("error", "Login credentials not matching");
     }
 
-    function post_signup(Request $request)
+    public function post_signup(Request $request)
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password1' => 'required',
-            'password2' => 'required'
+            'email' => 'required|email|unique:users,email',
+            'password1' => 'required|min:6',
+            'password2' => 'required|same:password1'
         ]);
 
         $data['name'] = $request->name;
         $data['email'] = $request->email;
-        $my_email = $request->email;
-        $data['password'] = $request->password1;
-        $pwd2 = $request->password2;
+        $data['password'] = bcrypt($request->password1);
 
-        if ($data['password'] == $pwd2) {
-            $user = User::create($data);
-            if (!$user) {
-                return redirect(route('signup'))->with("error", "Signup Failed");
-            }
-
-            return redirect(route('login'))->with("success", "Registration Successfull");
+        $user = User::create($data);
+        if (!$user) {
+            return redirect(route('signup'))->with('error', 'Signup Failed');
         }
+
+        return redirect(route('login'))->with('success', 'Registration Successful');
     }
 
-    function add_dish(Request $request)
+
+    public function add_dish(Request $request)
     {
-        $dish = new Dish();
-        $dish->dish_email = auth()->user()->email;
-        //Image
-        if ($request->hasFile('dish_image')) {
-            $file = $request->file('dish_image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
-            $file->move('uploads/dishes', $filename);
-            $dish->dish_image  = $filename;
-        } else {
-            return $request;
-            $dish->dish_image = '';
-        }
-        $dish->dish_name = $request->input('dish_name');
-        $dish->dish_cuisine = $request->get('dish_cuisine');
-        $dish->dish_ingredients = $request->input('dish_ingredients');
-        $dish->dish_dir = $request->input('dish_dir');
-        $dish->dish_time = $request->input('dish_time');
+        // Handle dish submission
+        if ($request->has('submit_dish')) {
+            try {
+                // Validate the request data
+                $validatedData = $request->validate([
+                    'title' => 'required|string|max:255',
+                    'description' => 'nullable|string',
+                    'time' => 'required|string|max:255',
+                    'dish_yield' => 'required|string|max:255',
+                    'ingredients' => 'required|array',
+                    'directions' => 'required|array',
+                    'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Ensure image is optional
+                ]);
 
-        $dish->save();
-        $query = 'SELECT id,dish_name,dish_image,dish_cuisine,dish_time,dish_ingredients FROM user_dishes WHERE dish_email = "' . auth()->user()->email . '"';
-        $dishes_all = DB::select($query);
-        return view('a5_userprofile')->with('dishes_all', $dishes_all);
+                // Convert ingredients array to a string separated by '%_%'
+                $ingredientsString = implode('%_%', $validatedData['ingredients']);
+
+                // Convert directions array to a string separated by '%_%'
+                $directionsString = implode('%_%', $validatedData['directions']);
+
+                // Create a new dish instance
+                $dish = new Dish();
+
+                // Upload the image if provided
+                if ($request->hasFile('image')) {
+                    $image = $request->file('image');
+                    $extension = $image->getClientOriginalExtension();
+                    $imageName = time() . '.' . $extension;
+                    $image->move('uploads/dishes', $imageName);
+                    $dish->dish_image = $imageName;
+                }
+
+                // Assign the rest of the dish attributes
+                $dish->dish_name = $validatedData['title'];
+                $dish->dish_description = $validatedData['description'];
+                $dish->dish_time = $validatedData['time'];
+                $dish->dish_yield = $validatedData['dish_yield'];
+                $dish->dish_email = Auth::user()->email;
+                $dish->dish_ingredients = $ingredientsString;
+                $dish->dish_dir = $directionsString;
+
+                // Save the dish to the database
+                $dish->save();
+
+                // Redirect the user back to the home page with a success message
+                return redirect()->route('home')->with('success', 'Dish added successfully!');
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                // Log the validation error messages
+                Log::error('Validation error: ' . json_encode($e->errors()));
+
+                // Return the error messages to the view
+                return redirect()->back()->withErrors($e->errors())->withInput();
+            } catch (\Exception $e) {
+                // Log the general error message
+                Log::error('Error adding dish: ' . $e->getMessage());
+
+                // Return the error message to the view
+                return redirect()->back()->with('error', 'There was an error adding your dish. Please try again.');
+            }
+        }
+
+        // Handle user image upload
+        if ($request->has('user_image')) {
+            $image = $request->file('user_image');
+            $extension = $image->getClientOriginalExtension();
+            $imageName = time() . '.' . $extension;
+            $image->move('uploads/users', $imageName);
+
+            // Update the user's avatar field in the database
+            $user = User::find(auth()->id()); // Assuming you're using Laravel's built-in authentication
+            $user->avatar = $imageName;
+            $user->save();
+
+            // Redirect back or return a view
+            return redirect()->back()->with('success', 'Image uploaded successfully');
+        } else {
+            // Handle if no file is uploaded
+            return redirect()->back()->with('error', 'No file uploaded');
+        }
     }
 
 
+    public function uploadImage(Request $request)
+    {
+        if ($request->hasFile('ub_img')) {
+            $image = $request->file('ub_img');
+            $extension = $image->getClientOriginalExtension();
+            $imageName = time() . '.' . $extension;
+            $image->move('uploads/users', $imageName);
 
+            // Update the user's avatar field in the database
+            $user = User::find(auth()->id()); // Assuming you're using Laravel's built-in authentication
+            $user->avatar = $imageName;
+            $user->save();
+
+            // Redirect back or return a view
+            return redirect()->back()->with('success', 'Image uploaded successfully');
+        } else {
+            // Handle if no file is uploaded
+            return redirect()->back()->with('error', 'No file uploaded');
+        }
+    }
     function showDishFull($dishId)
     {
-        $query = 'SELECT id,dish_email,dish_name,dish_image,dish_cuisine,dish_time,dish_ingredients, dish_dir FROM user_dishes WHERE id = "' . $dishId . '"';
+        $query = 'SELECT id,dish_description,dish_email,dish_name,dish_image,dish_time,dish_ingredients, dish_dir FROM user_dishes WHERE id = "' . $dishId . '"';
         $maindish = DB::select($query);
         return view('a6_dish')->with('maindish', $maindish);
     }
@@ -166,5 +250,28 @@ class MyController extends Controller
         $users = User::where('id', '!=', auth()->id())->get();
         // Pass the users data to the view
         return view('a8_userMessages')->with('users', $users);
+    }
+
+    public function sendEmail(Request $request)
+    {
+        // Retrieve form data
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $query = $request->input('query');
+
+        // Email details
+        $to = 'revanth.yeligatla@gmail.com';
+        $subject = 'Query from Contact Form';
+        $message = "Name: $name\n";
+        $message .= "Email: $email\n";
+        $message .= "Query: $query\n";
+        $headers = 'From: ' . $email; // Set From address to the provided email
+
+        // Send email
+        if (mail($to, $subject, $message, $headers)) {
+            return redirect()->back()->with('success', 'Email sent successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to send email. Please try again later.');
+        }
     }
 }

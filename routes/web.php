@@ -26,6 +26,7 @@ Route::post('/signup', [MyController::class, 'post_signup'])->name('signup.post'
 
 
 Route::get('/contact', [MyController::class, 'fun_contact'])->name('contact');
+Route::post('/contact', [MyController::class, 'sendEmail'])->name('send-email');
 
 
 Route::get('/logout', [MyController::class, 'logout'])->name('logout');
@@ -35,9 +36,6 @@ Route::post('/userprofile', [MyController::class, 'add_dish'])->name('dishadd.po
 Route::get('/dish/{dishId}', [MyController::class, 'showDishFull'])->name('dishcomplete');
 Route::get('/search/suggestions', [MyController::class, 'suggestions']);
 Route::view('/a5_addDishModal', 'a5_addDishModal')->name('addDishModal');
-
-
-
 Route::get('/recipes', [MyController::class, 'func_recipes'])->name('recipes');
 
 

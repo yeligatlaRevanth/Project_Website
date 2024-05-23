@@ -16,33 +16,44 @@
 	<div class="container">
 		<div class="row">
 			<!-- User Basic Container -->
+
 			<div class="col-3">
 				<div class="me-2 mt-5">
 					<div id="user_basic_container" style="background-color: #f79402; height:auto;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; border-radius:20px; padding: 20px;">
-						<div class=".img-fluid. max-width:500px;" id="user_basic">
-							<img src="{{asset('icon_userprofile.png')}}" id="ub_img" style="width: 100px; height: 100px; border-radius: 50%;">
+						<div class="img-fluid max-width:500px;" id="user_basic">
+							<form id="user_form" method="POST" action="{{ route('dishadd.post') }}" enctype="multipart/form-data">
+								@csrf
+								<label for="uploadUserImage">
+									<input type="file" id="uploadUserImage" style="display: none;" name="user_image" onchange="userImageUpload()">
+									@php
+									$avatar = Auth::user()->avatar;
+									$avatarUrl = ($avatar && $avatar !== 'avatar.png') ? asset('uploads/users/' . $avatar) : asset('icon_userprofile.png');
+									@endphp
+									<img src="{{ $avatarUrl }}" id="ub_img" name="ub_img" style="width: 100px; height: 100px; border-radius: 50%; cursor: pointer;">
+								</label>
+							</form>
 							<p class="h3" id="ub_name" style="margin-top: 20px;">{{Auth::user()->name}}</p>
 							<p class="h6" id="ub_desc">Testing new user. Loves cooking in free time. LPU undergrad student.</p>
 						</div>
+
 						<div class="ubDetails" style="margin-top: 20px;">
 							<p>Level</p>
-							<h5><span class="badge bg-secondary">Novice</span></h5>
+							<h5><span class="badge bg-secondary">{{ $userLevel }}</span></h5>
 						</div>
 						<div class="ubDetails">
 							<p>Member Since</p>
-							<h5><span class="badge bg-secondary">Nov 11, 2023</span></h5>
+							<h5><span class="badge bg-secondary">{{ \Carbon\Carbon::parse(Auth::user()->created_at)->format('M d, Y') }}</span></h5>
 						</div>
-						<div class="row" style="margin-top: 20px;">
-							<div class="col-6">
-								<a type="button" href="/logout" class="btn btnStyle" style="display:flex; margin: auto;width:100%">Logout</a>
-							</div>
-							<div class="col-6">
-								<a type="button" href="#" class="btn btnStyle" style="display:flex; width:100%">Edit</a>
+
+						<div style="margin-top: 20px; margin-right:130px;">
+							<div>
+								<a type="button" href="/logout" class="btn btnStyle" style="display:flex; margin: auto;">Logout</a>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+
 			<!-- Segment Control -->
 			<div class="col-9">
 				<div class="row mt-5 ms-6 mb-6">
@@ -54,11 +65,10 @@
 										<button class="nav-link active" id="userPostsTab" data-bs-toggle="tab" data-bs-target="#userPosts" type="button" role="tab" aria-controls="userPosts" aria-selected="true">Your Posts</button>
 									</li>
 									<li class="nav-item" role="presentation">
-										<button class="nav-link " id="profileTab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
+										<button class="nav-link" id="profileTab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
 									</li>
 								</ul>
 							</div>
-
 						</div>
 						<div class="tab-content" id="myTabContent">
 							<div class="tab-pane fade show active" id="currUserPosts" role="tabpanel" aria-labelledby="userPostsTab">
@@ -75,22 +85,22 @@
 									<div class="row" style="overflow-y: auto; max-height: 300px;">
 										<div class="container_user_posts" style="margin-top: 20px;">
 											<div class="container d-flex justify-content-start flex-wrap" style="padding-right: 120px;">
+												@if (count($dishes_all) === 0)
+												<p style="background-color: #f79402; color: white; padding: 10px; margin-top: 10px; cursor: pointer; text-align: center; border-radius: 20px;" onclick="document.getElementById('btnModal').click()">Nothing to show here. Create your first one.</p>
+												@else
 												@foreach ($dishes_all as $dishes)
 												<div class="container_allDishes" style="width: calc(33.33% - 20px); margin-right: 20px; margin-bottom: 20px;">
-													<div class="card" style="width: 100%;">
-														<img src="{{URL::asset('uploads/dishes/' . $dishes->dish_image)}}" class="card-img-top">
+													<div class="card" style="width: 100%; height:fit-content">
+														<a href="/dish/{{$dishes->id}}"><img src="{{URL::asset('uploads/dishes/' . $dishes->dish_image)}}" style="height:140px" class="card-img-top"></a>
 														<div class="card-body">
 															<h5 class="card-title">{{$dishes->dish_name}}</h5>
-															<h6 class="card-subtitle mb-2 text-muted">Cuisine: {{$dishes->dish_cuisine}} </h6>
-															<p class="card-text">Ingredients: {{$dishes->dish_ingredients}}</p>
-															<p class="card-text">Preparation Time: {{$dishes->dish_time}}</p>
 														</div>
 													</div>
 												</div>
 												@endforeach
+												@endif
 											</div>
 										</div>
-
 									</div>
 								</div>
 							</div>
@@ -151,13 +161,16 @@
 				</div>
 				<div class="modal-body">
 					<!-- Content loaded from a5_addDishModal.blade.php -->
-					<div id="addDishContent"></div>
+					<div id="addDishContent" style="max-height: 70vh; overflow-y: auto;"></div>
 				</div>
 			</div>
 		</div>
 	</div>
 </body>
 <script>
+	function userImageUpload() {
+		document.getElementById("user_form").submit(); // Form submission
+	}
 	$(document).ready(function() {
 		$('#addDishModal').on('show.bs.modal', function(event) {
 			var modal = $(this);
@@ -186,20 +199,21 @@
 			$('#currUserPosts').hide();
 			$('#profile').show();
 		});
+		document.getElementById('uploadUserImage').addEventListener('change', function(event) {
+			const file = event.target.files[0];
+			if (file && file.type.startsWith('image/')) {
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					document.getElementById('ub_img').src = e.target.result;
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+
+
 	});
 </script>
 <style type="text/css">
-	.modal-content {
-		width: auto;
-		height: auto;
-		max-width: 90vw;
-		/* Adjust maximum width as needed */
-		max-height: 90vh;
-		/* Adjust maximum height as needed */
-		overflow: scroll;
-	}
-
-
 	.mb-6 {
 		margin-bottom: 6rem;
 	}
@@ -293,6 +307,11 @@
 		background-color: whitesmoke;
 		margin-top: 30px;
 		padding: 20px;
+	}
+
+	#user_basic label {
+		display: block;
+		text-align: center;
 	}
 
 	#posts {

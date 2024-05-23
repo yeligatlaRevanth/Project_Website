@@ -14,7 +14,6 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 	<style type="text/css">
-		
 		body {
 			background-color: whitesmoke;
 			overflow-x: hidden;
@@ -163,14 +162,9 @@
 	<div class="container1 mt-5">
 		<div class="row">
 			<div class="col-12">
-				<p class="text-lg-right text-center fs-2 mt-5" style="font-family:Trirong"><span style="color:#f79402;">Starving?</span> We got you covered</p>
+				<p id="starving-section" class="text-lg-right text-center fs-2 mt-5" style="font-family:Trirong"><span style="color:#f79402;">Starving?</span> We got you covered</p>
 				<p class="text-lg-right text-center fs-6" style="font-family:Trirong">Search across the wide range of dishes that our users love</p>
-				<div class="segment-control mt-3">
-					<button class="segment-item active">All</button>
-					<button class="segment-item">Healthy</button>
-					<button class="segment-item">Snacks</button>
-					<button class="segment-item">Main Course</button>
-				</div>
+
 			</div>
 		</div>
 	</div>
@@ -185,12 +179,10 @@
 						<div class="container_allDishes" id="container-all-dishes">
 							<!-- Cards content -->
 							@foreach ($dishes_all as $dishes)<div class="card">
-								<a href="/dish/{{$dishes->id}}"><img src="{{URL::asset('uploads/dishes/' . $dishes->dish_image)}}" class="card-img-top"></a>
+								<a href="/dish/{{$dishes->id}}"><img src="{{URL::asset('uploads/dishes/' . $dishes->dish_image)}}" style="height:250px" class="card-img-top"></a>
 								<div class="card-body">
 									<h5 class="card-title">{{$dishes->dish_name}}</h5>
-									<h6 class="card-subtitle mb-2 text-muted">Cuisine: {{$dishes->dish_cuisine}} </h6>
 									<p class="card-subtitle mb-2 text-muted" style="font-size:small">By: {{$dishes->dish_email}} </p>
-									<p class="card-text">Ingredients: {{$dishes->dish_ingredients}}</p>
 									<p class="card-text">Preparation Time: {{$dishes->dish_time}}</p>
 								</div>
 							</div>@endforeach
@@ -209,6 +201,17 @@
 
 		document.getElementById('scroll-right').addEventListener('click', function() {
 			document.getElementById('container-all-dishes').scrollLeft += 100;
+		});
+
+		document.getElementById('home_btn1').addEventListener('click', function() {
+			// Get the Y-coordinate of the section to scroll to
+			const sectionY = document.getElementById('starving-section').offsetTop;
+
+			// Scroll smoothly to the section
+			window.scrollTo({
+				top: sectionY,
+				behavior: 'smooth'
+			});
 		});
 	</script>
 

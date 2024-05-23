@@ -28,7 +28,7 @@
 <body>
 	<div class="content">
 		<div class="container-bg min-vh-100 d-flex justify-content-center align-items-center mt-4 ms-6" style="width:90%;height:auto;"> <!-- Adjust height as needed -->
-			<form action="{{ route('signup.post') }}" method="POST" style="display: flex;">
+			<form action="{{ route('signup.post') }}" method="POST" style="display: flex;" id = "signupForm">
 				@csrf
 				<div style="flex: 1; display: flex;">
 					<img src="icon_signup.jpg" alt="Login Icon" style="width: 50%; height: auto; border-top-left-radius: 20px; border-bottom-left-radius: 20px;">
@@ -48,11 +48,11 @@
 							</div>
 							<div class="mb-3" style="text-align: left;">
 								<label class="form-label" style="font-size:1em;">Password</label>
-								<input type="password" class="form-control" placeholder="Password" name="password1">
+								<input type="password" class="form-control" id="password1" placeholder="Password" name="password1">
 							</div>
 							<div class="mb-3" style="text-align: left;">
 								<label class="form-label" style="font-size:1em;">Confirm Password</label>
-								<input type="password" class="form-control" placeholder="Confirm Password" name="password2">
+								<input type="password" class="form-control" id="password2" placeholder="Confirm Password" name="password2">
 							</div>
 							<button type="submit" class="btn" style="background-color:#f79402;width: 100px;margin-left: 250px;">Submit</button> <!-- Adjust other styles as needed -->
 
@@ -63,7 +63,32 @@
 			</form>
 		</div>
 	</div>
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		var form = document.getElementById('signupForm');
+		form.addEventListener('submit', function(event) {
+			// Clear previous errors
+			var errorMessages = document.querySelectorAll('.error-message');
+			errorMessages.forEach(function(msg) {
+				msg.remove();
+			});
+
+			// Check if the passwords match and length is valid
+			var password1 = document.getElementById('password1').value;
+			var password2 = document.getElementById('password2').value;
+
+			if (password1.length < 6) {
+				event.preventDefault();
+				alert('Password must be at least 6 characters long.');
+			} else if (password1 !== password2) {
+				event.preventDefault();
+				alert('Passwords do not match.');
+			}
+		});
+	});
+</script>
 </body>
+
 
 </html>
 

@@ -60,29 +60,20 @@
         .body {
             font-family: "Trirong";
         }
+        .mt-6{
+            margin-top: 14rem;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
-                <div class="contact-side mt-5">
+            <div class="col">
+                <div class="contact-side mt-6">
                     <h1 class="ml-3">Contact Us</h1>
-                    <p class="ml-3">We are here to help! Send us your query via the form below or send us an email at <a class="link" target="_blank" href="mailto:revanthyeligatla@gmail.com">revanth@gmail.com</a> for any issues you are facing.</p>
-                    <form class="ml-3">
-                        <p>Enter your name:</p>
-                        <input class="tt t-name mb-3" type="text" id="name" name="textbox" placeholder=" Enter your name">
-
-                        <p>Enter your Email</p>
-                        <input class="tt t-mail mb-3" type="text" id="email" name="textbox" placeholder=" Enter your Email">
-
-                        <p>Enter your query:</p>
-                        <input class="tt t-query" type="text" id="query" name="textbox" placeholder=" Enter the query">
-                    </form>
-                    <div class="but1">
-                        <button class="but text-white bg-info mt-5">Submit</button>
-                    </div>
+                    <p class="ml-3">We are here to help! Send us your query via email at <a class="link" target="_blank" href="mailto:revanthyeligatla@gmail.com">revanth@gmail.com</a> for any issues you are facing.</p>
+                    
                 </div>
             </div>
             <div class="col-md-6">

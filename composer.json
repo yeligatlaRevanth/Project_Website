@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.8",
         "laravolt/avatar": "^5.1",
         "munafio/chatify": "^1.6",
+        "nesbot/carbon": "^2.72",
         "pusher/pusher-php-server": "^7.2"
     },
     "require-dev": {

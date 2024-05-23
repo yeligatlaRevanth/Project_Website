@@ -18,9 +18,14 @@ class Dish extends Model
         'dish_email',
         'dish_image',
         'dish_name',
-        'dish_cuisine',
+        'dish_description',
         'dish_ingredients',
         'dish_dir',
-        'dish_time'
+        'dish_time',
+        'dish_yield'
+    ];
+    protected $casts = [
+        'dish_ingredients' => 'array',
+        'dish_dir' => 'array',
     ];
 }
